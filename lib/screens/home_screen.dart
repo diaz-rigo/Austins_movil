@@ -3,6 +3,9 @@ import '../services/product_service.dart';
 import '../models/product_model.dart';
 import '../widgets/product_card.dart';
 import '../widgets/custom_header.dart';
+import '../widgets/carrusel_widget.dart'; // Asegúrate de tener esta importación
+import '../widgets/category_buttons.dart'; // Importa el widget de categorías
+import '../widgets/product_carousel.dart'; // Importa el carrusel de productos
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,10 +23,30 @@ class _HomeScreenState extends State<HomeScreen> {
     futureProducts = ProductService().fetchProducts();
   }
 
+  // Lista de categorías de ejemplo
+  final List<String> categories = [
+    'Repostería',
+    'Panadería',
+    'Bebidas',
+    'Postres',
+  ];
+
+  // Lista de imágenes para el carrusel
+  final List<String> imageList = [
+    'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/mbpozw6je9mm8ycsoeih.jpg',
+    'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/m2z2hvzekjw0xrmjnji4.jpg',
+    // Agrega más URLs si es necesario
+  ];
+
+  void _onCategorySelected(String category) {
+    // Lógica para manejar la selección de categoría (filtrar productos, etc.)
+    print('Categoría seleccionada: $category');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomHeader(isLoggedIn: false) ,
+      appBar: CustomHeader(isLoggedIn: false),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -41,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
               onTap: () {
-                // Acción cuando se selecciona "Inicio"
                 Navigator.pop(context); // Cierra el drawer
               },
             ),
@@ -49,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
               onTap: () {
-                // Acción cuando se selecciona "Configuración"
                 Navigator.pop(context); // Cierra el drawer
               },
             ),
@@ -57,45 +78,56 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.logout),
               title: const Text('Cerrar sesión'),
               onTap: () {
-                // Acción para cerrar sesión
                 Navigator.pop(context); // Cierra el drawer
               },
             ),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<List<Product>>(
-          future: futureProducts,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final product = snapshot.data![index];
-                  return ProductCard(
-                    id: product.id,
-                    title: product.name,
-                    price: product.price,
-                    imageUrl: product.images.isNotEmpty ? product.images[0] : '',
+      body: Column(
+        children: [
+          // Agrega el CarruselWidget en la parte superior
+          CarruselWidget(imageList: imageList),
+
+          // Espacio entre el carrusel y la lista de productos
+          const SizedBox(height: 16.0),
+
+          // Botones de categorías
+          CategoryButtons(
+            categories: categories,
+            onCategorySelected: _onCategorySelected,
+          ),
+
+          // Espacio entre las categorías y el carrusel de productos
+          const SizedBox(height: 16.0),
+
+          // Carrusel de productos
+          Expanded(
+            child: FutureBuilder<List<Product>>(
+              future: futureProducts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return ProductCarousel(
+                    products: snapshot.data!.map((product) {
+                      return {
+                        'id': product.id,
+                        'title': product.name,
+                        'price': product.price,
+                        'imageUrl': product.images.isNotEmpty ? product.images[0] : '',
+                      };
+                    }).toList(),
                   );
-                },
-              );
-            } else {
-              return const Center(child: Text('No products found.'));
-            }
-          },
-        ),
+                } else {
+                  return const Center(child: Text('No products found.'));
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
