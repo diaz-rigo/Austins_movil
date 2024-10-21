@@ -17,6 +17,7 @@ class ProductCard extends StatelessWidget {
     this.isHighlighted = false,
   });
 
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -52,14 +53,9 @@ class ProductCard extends StatelessWidget {
                             imageUrl,
                             fit: BoxFit.cover,
                             height: isHighlighted ? 280.0 : 260.0,
-                            // AQUI AFECTA EL TAMAÑO 
-
+         
                             width: double.infinity,
-                            // errorBuilder: (context, error, stackTrace) {
-                            //   return const Center(
-                            //     child: Icon(Icons.error, size: 50.0),
-                            //   );
-                            // },
+   
                           ),
                         ),
                         if (isHighlighted)
@@ -92,14 +88,14 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          // AQUI TAMBIEN AFECTA ERROR TAMAÑO
+              
                           style: TextStyle(
                             fontSize: isHighlighted ? 24.0 : 20.0,
                             // fontWeight: FontWeight.bold,
                             color: Colors.brown,
                           ),
                           maxLines: 1,
-                          // overflow: TextOverflow.ellipsis,
+                     
                         ),
                         const SizedBox(height: 12.0),
                         Text(
