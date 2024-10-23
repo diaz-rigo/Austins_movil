@@ -9,7 +9,6 @@ import '../widgets/product_carousel.dart'; // Importa el carrusel de productos
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -30,14 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
     'Bebidas',
     'Postres',
   ];
-
   // Lista de imágenes para el carrusel
   final List<String> imageList = [
     'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/mbpozw6je9mm8ycsoeih.jpg',
     'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/m2z2hvzekjw0xrmjnji4.jpg',
     // Agrega más URLs si es necesario
   ];
-
   void _onCategorySelected(String category) {
     // Lógica para manejar la selección de categoría (filtrar productos, etc.)
     print('Categoría seleccionada: $category');
@@ -117,7 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         'id': product.id,
                         'title': product.name,
                         'price': product.price,
-                        'imageUrl': product.images.isNotEmpty ? product.images[0] : '',
+                        'imageUrl':
+                            product.images.isNotEmpty ? product.images[0] : '',
                       };
                     }).toList(),
                   );
