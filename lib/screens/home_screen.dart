@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   void _onCategorySelected(String category) {
     // Lógica para manejar la selección de categoría (filtrar productos, etc.)
-    print('Categoría seleccionada: $category');
+    // print('Categoría seleccionada: $category');
   }
 
   @override
