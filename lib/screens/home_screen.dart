@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/product_service.dart';
 import '../models/product_model.dart';
-import '../widgets/product_card.dart';
 import '../widgets/custom_header.dart';
 import '../widgets/carrusel_widget.dart'; // Asegúrate de tener esta importación
 import '../widgets/category_buttons.dart'; // Importa el widget de categorías
