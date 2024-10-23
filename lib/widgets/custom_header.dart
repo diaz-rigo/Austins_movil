@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool isLoggedIn; // Variable que indica si el usuario ha iniciado sesión
-  // const CustomHeader({super.key});
-  const CustomHeader({super.key, required this.isLoggedIn});
 
+  const CustomHeader({Key? key, required this.isLoggedIn}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.menu, color: Colors.brown[800]), // Icono de menú tipo "sándwich"
+        icon: const Icon(Icons.menu, color: Colors.brown), // Icono de menú tipo "sándwich"
         onPressed: () {
           Scaffold.of(context).openDrawer(); // Abre el drawer
         },
@@ -42,7 +41,7 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
         Stack(
           children: [
             IconButton(
-              icon: Icon(Icons.shopping_cart, color: Colors.brown[800]), // Color marrón para icono
+              icon: const Icon(Icons.shopping_cart, color: Colors.brown), // Color marrón para icono
               onPressed: () {
                 Navigator.pushNamed(context, '/cart');
               },
@@ -77,7 +76,7 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
         Stack(
           children: [
             IconButton(
-              icon: Icon(Icons.favorite, color: Colors.brown[800]), // Color marrón para icono
+              icon: const Icon(Icons.favorite, color: Colors.brown), // Color marrón para icono
               onPressed: () {
                 Navigator.pushNamed(context, '/favorites');
               },
@@ -109,25 +108,23 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
         IconButton(
-          icon: Icon(Icons.search, color: Colors.brown[800]), // Color marrón para icono
+          icon: const Icon(Icons.search, color: Colors.brown), // Color marrón para icono
           onPressed: () {
             // Acción para la búsqueda
           },
           tooltip: 'Search',
         ),
-       // Condicional para mostrar el icono de perfil o acceso
+        // Condicional para mostrar el icono de perfil o acceso
         IconButton(
           icon: Icon(
             isLoggedIn ? Icons.person : Icons.login, // Muestra "perfil" si está logueado o "ingresar" si no lo está
-            color: Colors.brown[800],
+            color: Colors.brown,
           ),
           onPressed: () {
             if (isLoggedIn) {
               Navigator.pushNamed(context, '/profile'); // Si está logueado, navega al perfil
             } else {
-                            _showLoginModal(context); // Si no está logueado, muestra el modal de login
-
-              // Navigator.pushNamed(context, '/login'); // Si no está logueado, navega a la pantalla de login
+              _showLoginModal(context); // Si no está logueado, muestra el modal de login
             }
           },
           tooltip: isLoggedIn ? 'Profile' : 'Login', // Texto flotante condicional
@@ -142,10 +139,6 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 80.0,
     );
   }
-
-
-
-  // Método para mostrar el modal de login
 
   // Método para mostrar el modal de login
   void _showLoginModal(BuildContext context) {
@@ -202,21 +195,17 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
               },
               child: const Text('Cancelar'),
               style: TextButton.styleFrom(
-      backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
+                backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
               ),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                // Lógica para autenticar
-                Navigator.of(context).pop();
+                // Lógica para iniciar sesión
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 171, 119, 100),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+              child: const Text('Iniciar Sesión'),
+              style: TextButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
               ),
-              child: const Text('Iniciar sesión'),
             ),
           ],
         );
@@ -224,8 +213,6 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-
-  
   @override
-  Size get preferredSize => const Size.fromHeight(80.0);
+  Size get preferredSize => const Size.fromHeight(80.0); // Tamaño preferido para el AppBar
 }

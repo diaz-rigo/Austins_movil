@@ -121,7 +121,7 @@ class ProductCard extends StatelessWidget {
               right: 20.0,
               child: FloatingActionButton(
                 onPressed: () {
-                  print('Producto $id agregado al carrito');
+                  // print('Producto $id agregado al carrito');
                 },
                 backgroundColor: Colors.orange,
                 child: const Icon(Icons.add_shopping_cart),
