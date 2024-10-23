@@ -13,7 +13,6 @@ class ProductCarousel extends StatefulWidget {
 
 class _ProductCarouselState extends State<ProductCarousel> {
   int _current = 0;
-
   @override
   Widget build(BuildContext context) {
     return Column(
