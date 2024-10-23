@@ -1,0 +1,89 @@
+name: austins Flutter CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - develop
+      - feature/*
+      - hotfix/*
+      - testing
+  pull_request:
+    branches:
+      - main
+      - staging
+      - develop
+      - feature/*
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.5.0' # Establece la versión de Flutter compatible
+
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.pub-cache
+            .flutter-plugins
+            .packages
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Analyze Codebase
+        run: flutter analyze
+
+      - name: Run Unit Tests
+        run: flutter test --coverage
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.5.0'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      # - name: Deploy to Firebase App Distribution
+      #   env:
+      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      #   run: |
+      #     firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+      #       --app YOUR_FIREBASE_APP_ID \
+      #       --groups testers \
+      #       --release-notes "Nueva versión de la app"
