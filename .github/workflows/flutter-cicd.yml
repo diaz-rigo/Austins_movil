@@ -1,4 +1,4 @@
-name: austins Flutter CI/CD Workflow
+name: Austins Flutter CI/CD Workflow
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # Cambia a la versión más reciente que has verificado
+          flutter-version: '3.24.0' # Asegúrate de usar la versión correcta
 
       - name: Cache Dependencies
         uses: actions/cache@v2
@@ -44,8 +44,9 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      # - name: Analyze Codebase
-      #   run: flutter analyze
+      # Se recomienda mantener el análisis de código para evitar errores
+      - name: Analyze Codebase
+        run: flutter analyze
 
       - name: Run Unit Tests
         run: flutter test --coverage
@@ -71,7 +72,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.5.0'
+          flutter-version: '3.24.0' # Cambié a la misma versión
 
       - name: Install Dependencies
         run: flutter pub get
@@ -79,6 +80,7 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
+      # Si deseas implementar en Firebase, descomenta y configura correctamente
       # - name: Deploy to Firebase App Distribution
       #   env:
       #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
