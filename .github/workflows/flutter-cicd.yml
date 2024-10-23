@@ -28,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.5.0' # Establece la versión de Flutter compatible
+          flutter-version: 'stable' # Cambia a 'stable'
 
       - name: Cache Dependencies
         uses: actions/cache@v2
