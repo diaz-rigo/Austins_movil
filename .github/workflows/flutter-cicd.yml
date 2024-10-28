@@ -1,91 +1,118 @@
-name: Austins Flutter CI/CD Workflow
+name: PWA CI/CD Workflow
 
 on:
   push:
     branches:
       - main
-      - staging
+      - release/*
       - develop
       - feature/*
-      - hotfix/*
-      - testing
   pull_request:
     branches:
       - main
-      - staging
-      - develop
-      - feature/*
+      - release/*
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0' # Asegúrate de usar la versión correcta
+#     - name: Set up Flutter
+#       uses: subosito/flutter-action@v2
+#       with:
+#         flutter-version: '3.3.0'  # Ajusta a la versión de Flutter necesaria
 
-      - name: Cache Dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.pub-cache
-            .flutter-plugins
-            .packages
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
+#     - name: Cache Flutter dependencies
+#       uses: actions/cache@v2
+#       with:
+#         path: |
+#           ~/.pub-cache
+#         key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+#         restore-keys: |
+#           ${{ runner.os }}-pub-cache-
 
-      - name: Install Dependencies
-        run: flutter pub get
+#     - name: Install dependencies
+#       run: flutter pub get
 
-      # Se recomienda mantener el análisis de código para evitar errores
-      - name: Analyze Codebase
-        run: flutter analyze
+#     - name: Build the application
+#       run: flutter build web --release
 
-      - name: Run Unit Tests
-        run: flutter test --coverage
+#     - name: Upload build artifacts
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: build
+#         path: build/web
 
-      - name: Build APK
-        run: flutter build apk --release
+#   test:
+#     runs-on: ubuntu-latest
+#     needs: build
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: build/app/outputs/flutter-apk/app-release.apk
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
 
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+#     - name: Set up Flutter
+#       uses: subosito/flutter-action@v2
+#       with:
+#         flutter-version: '3.3.0'
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+#     - name: Run unit tests
+#       run: flutter test
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0' # Cambié a la misma versión
+#     - name: Run integration tests
+#       run: flutter drive --target=test_driver/app.dart
 
-      - name: Install Dependencies
-        run: flutter pub get
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: build
+#     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
 
-      - name: Build APK
-        run: flutter build apk --release
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
 
-      # Si deseas implementar en Firebase, descomenta y configura correctamente
-      # - name: Deploy to Firebase App Distribution
-      #   env:
-      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-      #   run: |
-      #     firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-      #       --app YOUR_FIREBASE_APP_ID \
-      #       --groups testers \
-      #       --release-notes "Nueva versión de la app"
+#     - name: Deploy to Firebase Hosting
+#       uses: wzieba/Firebase-Hosting-Github-Action@v2.0.0
+#       with:
+#         firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+#         channelId: live  # Cambia esto si usas un canal diferente
+#         projectId: your-project-id  # Reemplaza con tu ID de proyecto de Firebase
+
+#   notify:
+#     runs-on: ubuntu-latest
+#     needs: [build, test]
+#     if: failure() || success()
+
+#     steps:
+#     - name: Notify success/failure
+#       uses: actions/github-script@v4
+#       with:
+#         script: |
+#           const status = '${{ job.status }}';
+#           const message = `CI/CD workflow has finished with status: ${status}`;
+#           await github.issues.createComment({
+#             issue_number: context.issue.number,
+#             owner: context.repo.owner,
+#             repo: context.repo.repo,
+#             body: message,
+#           });
+
+#   lint:
+#     runs-on: ubuntu-latest
+#     needs: build
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+
+#     - name: Set up Flutter
+#       uses: subosito/flutter-action@v2
+#       with:
+#         flutter-version: '3.3.0'
+
+#     - name: Run linter
+#       run: flutter analyze
