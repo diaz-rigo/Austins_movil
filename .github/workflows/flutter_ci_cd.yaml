@@ -12,6 +12,7 @@ on:
       - main
       - release/*
   workflow_dispatch:
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -49,10 +50,11 @@ jobs:
 
       - name: Upload APK artifact
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
 
   # test:
   #   runs-on: ubuntu-latest
