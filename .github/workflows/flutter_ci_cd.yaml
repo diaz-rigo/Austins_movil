@@ -25,13 +25,15 @@ jobs:
         with:
           flutter-version: '3.24.0'
 
-      # Ensure the flutter binary is in PATH
+      # Explicitly set Flutter in PATH after installation
       - name: Add Flutter to PATH
-        run: echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+        run: echo "${{ runner.tool_cache }}/flutter/bin" >> $GITHUB_PATH
 
-      # Confirm Flutter installation path
+      # Confirm Flutter installation path and check if it’s recognized
       - name: Show Flutter installation path
-        run: which flutter
+        run: |
+          echo $PATH
+          which flutter || echo "Flutter not found in PATH"
 
       # Verify Flutter installation
       - name: Verify Flutter installation
@@ -51,6 +53,14 @@ jobs:
         run: flutter build apk --release
         env:
           FLUTTER_ENV: production
+
+      - name: Upload APK artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
 
   #     - name: Upload APK artifact
   #       if: always()
