@@ -28,17 +28,17 @@ jobs:
         channel: stable  # Or use 'master' if beta is unavailable
 
 
-    - name: Cache Flutter dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.pub-cache
-        key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pub-cache-
+    # - name: Cache Flutter dependencies
+    #   uses: actions/cache@v2
+    #   with:
+    #     path: |
+    #       ~/.pub-cache
+    #     key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-pub-cache-
 
-    - name: Install dependencies
-      run: flutter pub get
+    # - name: Install dependencies
+    #   run: flutter pub get
 
 
 
