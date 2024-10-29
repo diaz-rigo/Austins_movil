@@ -65,8 +65,11 @@ jobs:
     - name: Run unit tests
       run: flutter test
 
+    # - name: Run integration tests
+    #   run: flutter drive --target=test_driver/app.dart -d chrome  # Especificar dispositivo
+
     - name: Run integration tests
-      run: flutter drive --target=test_driver/app.dart -d chrome  # Especificar dispositivo
+      run: flutter drive --target=test_driver/app.dart -d web-server  # Cambiado a web-server
 
 #   deploy:
 #     runs-on: ubuntu-latest
