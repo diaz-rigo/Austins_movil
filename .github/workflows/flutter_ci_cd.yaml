@@ -24,7 +24,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: ^3.5.0
+        flutter-version: 3.5.0  # Specify exact version
 
     - name: Cache Flutter dependencies
       uses: actions/cache@v2
@@ -37,6 +37,7 @@ jobs:
 
     - name: Install dependencies
       run: flutter pub get
+
 
 
     # - name: Build the application
