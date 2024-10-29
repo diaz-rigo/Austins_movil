@@ -64,11 +64,11 @@ jobs:
       with:
         flutter-version: 3.24.0  # Specify exact version
 
-#     - name: Run unit tests
-#       run: flutter test
+    - name: Run unit tests
+      run: flutter test
 
-#     - name: Run integration tests
-#       run: flutter drive --target=test_driver/app.dart
+    - name: Run integration tests
+      run: flutter drive --target=test_driver/app.dart
 
 #   deploy:
 #     runs-on: ubuntu-latest
