@@ -34,8 +34,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pub-cache-
 
-    # - name: Install dependencies
-    #   run: flutter pub get
+    - name: Install dependencies
+      run: flutter pub get
 
     # - name: Build the application
     #   run: flutter build web --release
