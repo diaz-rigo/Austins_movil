@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Usar v3 en ambos trabajos
+      uses: actions/checkout@v3
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
@@ -55,20 +55,24 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Usar v3 en ambos trabajos
+      uses: actions/checkout@v3
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: 3.24.0
+
+    - name: Check Internet Connection
+      run: |
+        ping -c 3 google.com || (echo "Internet connection issue, aborting" && exit 1)
+
     - name: Install ChromeDriver
       run: |
         CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-        CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+        CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
         wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip -d /usr/local/bin/
         chmod +x /usr/local/bin/chromedriver
-    
 
     - name: Start ChromeDriver
       run: |
@@ -79,11 +83,13 @@ jobs:
 
     - name: Run integration tests
       run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+
     - name: Print Flutter and Chrome info
       run: |
         flutter --version
         chromedriver --version
         google-chrome --version
+
     
 #   deploy:
 #     runs-on: ubuntu-latest
