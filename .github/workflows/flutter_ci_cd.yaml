@@ -25,17 +25,13 @@ jobs:
         with:
           flutter-version: '3.24.0'
 
-      # Confirm Flutter installation
+      # Confirm Flutter installation path
+      - name: Show Flutter installation path
+        run: which flutter
+
+      # Verify Flutter installation
       - name: Verify Flutter installation
         run: flutter --version
-
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ runner.tool_cache }}/flutter
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
 
       - name: Install dependencies
         run: flutter pub get
@@ -58,6 +54,7 @@ jobs:
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
 
 
 
