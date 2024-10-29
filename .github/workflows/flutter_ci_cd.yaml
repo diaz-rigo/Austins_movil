@@ -68,7 +68,7 @@ jobs:
       run: flutter test
 
     - name: Run integration tests
-      run: flutter drive --target=test_driver/app.dart
+      run: flutter test integration_test/app_test.dart  # Cambiar a ejecutar pruebas de integración
 
 #   deploy:
 #     runs-on: ubuntu-latest
