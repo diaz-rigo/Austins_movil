@@ -37,8 +37,8 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
-    - name: Build the application
-      run: flutter build web --release
+    # - name: Build the application
+    #   run: flutter build web --release
 
   #   - name: Upload build artifacts
   #     uses: actions/upload-artifact@v2
