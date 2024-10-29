@@ -46,13 +46,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
+
+      - name: Limpiar proyecto
+        run: flutter clean
+
       - name: Build APK
-        run: flutter build apk --release --no-tree-shake-icons
-        
+        run: flutter build apk --release --no-tree-shake-icons --stacktrace
         env:
           FLUTTER_ENV: production
 
