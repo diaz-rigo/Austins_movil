@@ -48,47 +48,55 @@ jobs:
       with:
           name: build
           path: build/web
-
   test:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 3.24.0
-    # - name: Check Internet Connection
-    #   run: |
-    #     ping -c 3 1.1.1.1 || (echo "Internet connection issue, aborting" && exit 1)
-      
-    - name: Install ChromeDriver
-      run: |
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-        CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-        curl -o chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip -d /usr/local/bin/
-        chmod +x /usr/local/bin/chromedriver
-      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.24.0
 
-    - name: Start ChromeDriver
-      run: |
-        chromedriver --port=4444 &
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
-    - name: Run unit tests
-      run: flutter test
+      - name: Install ChromeDriver
+        run: |
+          # Obtener la versión de Google Chrome instalada
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          echo "Detected Google Chrome version: $CHROME_VERSION"
+          
+          # Descargar la versión correspondiente de ChromeDriver
+          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          echo "Installing ChromeDriver version: $CHROMEDRIVER_VERSION"
+          
+          curl -o chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip -d /usr/local/bin/
+          chmod +x /usr/local/bin/chromedriver
 
-    - name: Run integration tests
-      run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+      - name: Start ChromeDriver
+        run: |
+          chromedriver --port=4444 &
+        # Verificar que ChromeDriver está corriendo correctamente
+        timeout-minutes: 1
 
-    - name: Print Flutter and Chrome info
-      run: |
-        flutter --version
-        chromedriver --version
-        google-chrome --version
+      - name: Run unit tests
+        run: flutter test
+
+      - name: Run integration tests
+        run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+
+      - name: Print Flutter and Chrome info
+        run: |
+          flutter --version
+          chromedriver --version
+          google-chrome --version
 
     
 #   deploy:
