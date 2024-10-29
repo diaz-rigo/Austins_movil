@@ -25,6 +25,10 @@ jobs:
         with:
           flutter-version: '3.24.0'
 
+      # Ensure the flutter binary is in PATH
+      - name: Add Flutter to PATH
+        run: echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+
       # Confirm Flutter installation path
       - name: Show Flutter installation path
         run: which flutter
@@ -35,7 +39,6 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-
 
   build:
     runs-on: ubuntu-latest
