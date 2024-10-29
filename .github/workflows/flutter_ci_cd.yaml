@@ -42,14 +42,14 @@ jobs:
 
 
 
-    # - name: Build the application
-    #   run: flutter build web --release
+    - name: Build the application
+      run: flutter build web --release
 
-  #   - name: Upload build artifacts
-  #     uses: actions/upload-artifact@v2
-  #     with:
-  #       name: build
-  #       path: build/web
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: build/web
 
   # test:
   #   runs-on: ubuntu-latest
