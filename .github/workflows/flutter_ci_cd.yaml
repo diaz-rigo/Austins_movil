@@ -77,6 +77,11 @@ jobs:
 
     - name: Run integration tests
       run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+    - name: Print Flutter and Chrome info
+      run: |
+        flutter --version
+        chromedriver --version
+        google-chrome --version
     
 #   deploy:
 #     runs-on: ubuntu-latest
