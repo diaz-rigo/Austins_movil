@@ -25,6 +25,8 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: 3.5.0  # Specify exact version
+        channel: beta  # Or use 'master' if beta is unavailable
+
 
     - name: Cache Flutter dependencies
       uses: actions/cache@v2
