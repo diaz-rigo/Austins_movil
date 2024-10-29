@@ -63,8 +63,10 @@ jobs:
         flutter-version: 3.24.0
     - name: Install ChromeDriver
       run: |
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
         sudo apt-get update
-        sudo apt-get install -y chromium-chromedriver
+        sudo apt-get install -y chromium-chromedriver=$CHROME_VERSION
+      
 
     - name: Start ChromeDriver
       run: |
@@ -74,7 +76,8 @@ jobs:
       run: flutter test
 
     - name: Run integration tests
-      run: flutter drive --target=test_driver/app.dart -d chrome --verbose
+      run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+    
 #   deploy:
 #     runs-on: ubuntu-latest
 #     needs: build
