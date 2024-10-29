@@ -61,9 +61,9 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: 3.24.0
-    - name: Check Internet Connection
-      run: |
-        ping -c 3 1.1.1.1 || (echo "Internet connection issue, aborting" && exit 1)
+    # - name: Check Internet Connection
+    #   run: |
+    #     ping -c 3 1.1.1.1 || (echo "Internet connection issue, aborting" && exit 1)
       
     - name: Install ChromeDriver
       run: |
