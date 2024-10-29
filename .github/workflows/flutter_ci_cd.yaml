@@ -59,10 +59,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-#     - name: Set up Flutter
-#       uses: subosito/flutter-action@v2
-#       with:
-#         flutter-version: '3.3.0'
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 3.24.0  # Specify exact version
 
 #     - name: Run unit tests
 #       run: flutter test
