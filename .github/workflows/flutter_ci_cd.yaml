@@ -19,14 +19,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3  # Usar v3 en ambos trabajos
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 3.24.0  # Specify exact version
-        # channel: stable  # Or use 'master' if beta is unavailable
-
+        flutter-version: 3.24.0
 
     - name: Cache Flutter dependencies
       uses: actions/cache@v2
@@ -38,15 +36,15 @@ jobs:
           ${{ runner.os }}-pub-cache-
 
     - name: Install dependencies
-      run: flutter pub get
-
-
+      run: |
+        flutter pub get
+        flutter pub upgrade
 
     - name: Build the application
       run: flutter build web --release
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3  # Cambiado de v2 a v3
+      uses: actions/upload-artifact@v3
       with:
           name: build
           path: build/web
@@ -57,18 +55,18 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Usar v3 en ambos trabajos
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 3.24.0  # Specify exact version
+        flutter-version: 3.24.0
 
     - name: Run unit tests
       run: flutter test
 
     - name: Run integration tests
-      run: flutter drive --target=test_driver/app.dart  # Cambiar a ejecutar pruebas de integración
+      run: flutter drive --target=test_driver/app.dart -d chrome  # Especificar dispositivo
 
 #   deploy:
 #     runs-on: ubuntu-latest
