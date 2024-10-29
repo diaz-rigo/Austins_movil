@@ -40,12 +40,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-  # build:
-  #   runs-on: ubuntu-latest
-  #   needs: setup
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
   #     - name: Build APK
   #       run: flutter build apk --release
