@@ -47,10 +47,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-  #     - name: Build APK
-  #       run: flutter build apk --release
-  #       env:
-  #         FLUTTER_ENV: production
+      - name: Build APK
+        run: flutter build apk --release
+        env:
+          FLUTTER_ENV: production
 
   #     - name: Upload APK artifact
   #       if: always()
