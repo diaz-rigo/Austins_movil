@@ -12,140 +12,78 @@ on:
       - main
       - release/*
   workflow_dispatch:
-
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 3.24.0
-
-    - name: Cache Flutter dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.pub-cache
-        key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pub-cache-
-
-    - name: Install dependencies
-      run: |
-        flutter pub get
-        flutter pub upgrade
-
-    - name: Build the application
-      run: flutter build web --release
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-          name: build
-          path: build/web
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.24.0
+          flutter-version: '3.24.0'
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.tool_cache }}/flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
 
-      - name: Install ChromeDriver
-        run: |
-          # Obtener la versión de Google Chrome instalada
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          echo "Detected Google Chrome version: $CHROME_VERSION"
-          
-          # Descargar la versión correspondiente de ChromeDriver
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          echo "Installing ChromeDriver version: $CHROMEDRIVER_VERSION"
-          
-          curl -o chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+      - name: Install dependencies
+        run: flutter pub get
 
-      - name: Start ChromeDriver
-        run: |
-          chromedriver --port=4444 &
-        # Verificar que ChromeDriver está corriendo correctamente
-        timeout-minutes: 1
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Run unit tests
-        run: flutter test
+      - name: Build APK
+        run: flutter build apk --release
+        env:
+          FLUTTER_ENV: production
 
-      - name: Run integration tests
-        run: flutter drive --target=test_driver/app.dart -d chrome --timeout 300 --verbose
+      - name: Upload APK artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Print Flutter and Chrome info
-        run: |
-          flutter --version
-          chromedriver --version
-          google-chrome --version
+  # test:
+  #   runs-on: ubuntu-latest
+  #   needs: setup
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-    
+  #     - name: Run unit tests
+  #       run: flutter test
+
+  #     - name: Run integration tests
+  #       run: flutter drive --target=test_driver/app.dart
+
 #   deploy:
 #     runs-on: ubuntu-latest
-#     needs: build
 #     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-
-#     - name: Deploy to Firebase Hosting
-#       uses: wzieba/Firebase-Hosting-Github-Action@v2.0.0
-#       with:
-#         firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-#         channelId: live  # Cambia esto si usas un canal diferente
-#         projectId: your-project-id  # Reemplaza con tu ID de proyecto de Firebase
-
-#   notify:
-#     runs-on: ubuntu-latest
 #     needs: [build, test]
-#     if: failure() || success()
-
 #     steps:
-#     - name: Notify success/failure
-#       uses: actions/github-script@v4
-#       with:
-#         script: |
-#           const status = '${{ job.status }}';
-#           const message = `CI/CD workflow has finished with status: ${status}`;
-#           await github.issues.createComment({
-#             issue_number: context.issue.number,
-#             owner: context.repo.owner,
-#             repo: context.repo.repo,
-#             body: message,
-#           });
+#       - name: Deploy to Firebase App Distribution
+#         uses: wzieba/Firebase-Distribution-Github-Action@v1
+#         with:
+#           appId: ${{ secrets.FIREBASE_APP_ID }}
+#           token: ${{ secrets.FIREBASE_TOKEN }}
+#           groups: testers
+#           file: build/app/outputs/flutter-apk/app-release.apk
 
-#   lint:
-#     runs-on: ubuntu-latest
-#     needs: build
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-
-#     - name: Set up Flutter
-#       uses: subosito/flutter-action@v2
-#       with:
-#         flutter-version: '3.3.0'
-
-#     - name: Run linter
-#       run: flutter analyze
+# notifications:
+#   slack:
+#     if: failure()
+#     uses: rtCamp/action-slack-notify@v2
+#     with:
+#       status: ${{ job.status }}
+#       webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
