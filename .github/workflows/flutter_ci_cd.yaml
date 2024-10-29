@@ -25,6 +25,10 @@ jobs:
         with:
           flutter-version: '3.24.0'
 
+      # Confirm Flutter installation
+      - name: Verify Flutter installation
+        run: flutter --version
+
       - name: Cache Flutter dependencies
         uses: actions/cache@v2
         with:
@@ -54,6 +58,7 @@ jobs:
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
 
 
   # test:
