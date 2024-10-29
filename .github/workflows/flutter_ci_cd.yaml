@@ -21,10 +21,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: 3.5.0  # Specify exact version
+    # - name: Set up Flutter
+    #   uses: subosito/flutter-action@v2
+    #   with:
+    #     flutter-version: 3.5.0  # Specify exact version
         # channel: stable  # Or use 'master' if beta is unavailable
 
 
