@@ -81,8 +81,9 @@ jobs:
       - name: Run unit tests
         run: flutter test
 
-      - name: Run integration tests
-        run: flutter drive --target=test_driver/app.dart
+      - name: Run Flutter tests
+        run: flutter drive --target=test_driver/app.dart -d all
+
 
 #   deploy:
 #     runs-on: ubuntu-latest
