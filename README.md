@@ -9,16 +9,15 @@ Bienvenido a **Austins** 🎂, una aplicación de comercio electrónico Flutter 
 
 Austins permite a los usuarios descubrir productos, añadir sus favoritos al carrito y realizar compras con una interfaz optimizada para dispositivos móviles.
 
+
 ---
 
 ### 🛠️ Características principales
 
 - **Catálogo de productos**: Navega por una variedad de productos de repostería con detalles completos.
 - **Carrito de compras**: Agrega productos al carrito y revisa el pedido antes de confirmar.
-<!-- - **Buscador avanzado**: Encuentra tus productos favoritos fácilmente. -->
 - **Integración de pago**: Realiza pagos seguros mediante Stripe.
 - **Sistema de autenticación**: Registro e inicio de sesión para personalizar la experiencia del usuario.
-<!-- - **Rutas de entrega**: Opciones de entrega para varias zonas en Hidalgo, México. -->
 
 ### 📋 Requisitos previos
 
@@ -31,3 +30,19 @@ Austins permite a los usuarios descubrir productos, añadir sus favoritos al car
 1. **Clona el repositorio**:
    ```bash
    git clone https://github.com/diaz-rigo/Austins_movil.git
+   ```
+
+2. **Navega a la carpeta del proyecto**:
+   ```bash
+   cd Austins_movil
+   ```
+
+3. **Instala las dependencias de Dart**:
+   ```bash
+   flutter pub get
+   ```
+
+4. **Ejecuta la aplicación**:
+   ```bash
+   flutter run
+   ```
