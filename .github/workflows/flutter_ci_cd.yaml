@@ -120,10 +120,25 @@ jobs:
           firebase deploy --only hosting
 
 
-# notifications:
-#   slack:
-#     if: failure()
-#     uses: rtCamp/action-slack-notify@v2
-#     with:
-#       status: ${{ job.status }}
-#       webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notify-email:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Send Notification via Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Pipeline Result: ${{ job.status }}"
+          body: |
+            El pipeline ha completado su ejecución.
+
+            Workflow: ${{ github.workflow }}
+            Job Status: ${{ job.status }}
+            Event: ${{ github.event_name }}
+            Repository: ${{ github.repository }}
+          to: ${{ secrets.NOTIFICATION_EMAIL }}
+          from: ${{ secrets.MAIL_USERNAME }}
