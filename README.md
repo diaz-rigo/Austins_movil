@@ -1,5 +1,7 @@
 # 🍰 Austins - Flutter E-commerce App for Bakery 🍰
-<img src="https://static.wixstatic.com/media/64de7c_4d76bd81efd44bb4a32757eadf78d898~mv2_d_1765_2028_s_2.png" alt="Logo de Austins" width="400"/>
+<div align="center">
+    <img src="https://static.wixstatic.com/media/64de7c_4d76bd81efd44bb4a32757eadf78d898~mv2_d_1765_2028_s_2.png" alt="Logo de Austins" width="300"/> <!-- Cambia el valor de width según el tamaño deseado -->
+</div>
 
 Bienvenido a **Austins** 🎂, una aplicación de comercio electrónico Flutter centrada en la repostería. Esta app brinda a los usuarios una experiencia visualmente atractiva y práctica para explorar y pedir productos de repostería, desde pasteles hasta galletas y mucho más.
 
