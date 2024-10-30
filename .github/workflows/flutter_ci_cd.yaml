@@ -59,12 +59,12 @@ jobs:
         env:
           FLUTTER_ENV: production
 
-  #     - name: Upload APK artifact
-  #       if: always()
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: release-apk
-  #         path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Upload APK artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
 
   # test:
