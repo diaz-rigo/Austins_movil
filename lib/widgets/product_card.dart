@@ -55,7 +55,11 @@ class ProductCard extends StatelessWidget {
                             // AQUI AFECTA EL TAMAÑO 
 
                             width: double.infinity,
+<<<<<<< HEAD
    
+=======
+          
+>>>>>>> 66e4ff52f6232347c670c403b2ccc6e2a7b60b99
                           ),
                         ),
                         if (isHighlighted)
