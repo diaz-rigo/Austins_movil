@@ -51,13 +51,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
-      - name: Cache Pub dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.pub-cache
-          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-cache-
+      # - name: Cache Pub dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.pub-cache
+      #     key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pub-cache-
 
       - name: Limpiar proyecto
         run: flutter clean
