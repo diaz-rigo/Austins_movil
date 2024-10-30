@@ -15,7 +15,7 @@ Austins permite a los usuarios descubrir productos, añadir sus favoritos al car
 <!-- - **Buscador avanzado**: Encuentra tus productos favoritos fácilmente. -->
 - **Integración de pago**: Realiza pagos seguros mediante Stripe.
 - **Sistema de autenticación**: Registro e inicio de sesión para personalizar la experiencia del usuario.
-- **Rutas de entrega**: Opciones de entrega para varias zonas en Hidalgo, México.
+<!-- - **Rutas de entrega**: Opciones de entrega para varias zonas en Hidalgo, México. -->
 
 ### 📋 Requisitos previos
 
