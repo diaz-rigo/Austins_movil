@@ -55,11 +55,7 @@ class ProductCard extends StatelessWidget {
                             // AQUI AFECTA EL TAMAÑO 
 
                             width: double.infinity,
-                            // errorBuilder: (context, error, stackTrace) {
-                            //   return const Center(
-                            //     child: Icon(Icons.error, size: 50.0),
-                            //   );
-                            // },
+   
                           ),
                         ),
                         if (isHighlighted)
