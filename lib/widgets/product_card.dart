@@ -88,7 +88,6 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          // AQUI TAMBIEN AFECTA ERROR TAMAÑO
                           style: TextStyle(
                             fontSize: isHighlighted ? 24.0 : 20.0,
                             color: Colors.brown,
