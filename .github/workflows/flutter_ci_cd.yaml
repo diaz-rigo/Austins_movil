@@ -54,9 +54,8 @@ jobs:
 
       - name: Limpiar proyecto
         run: flutter clean
-
       - name: Build APK
-        run: flutter build apk --release --no-tree-shake-icons --stacktrace
+        run: flutter build apk --release --no-tree-shake-icons
         env:
           FLUTTER_ENV: production
 
