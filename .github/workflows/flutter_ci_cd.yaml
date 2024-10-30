@@ -80,10 +80,11 @@ jobs:
 
       - name: Run unit tests
         run: flutter test
+      - name: Install Ninja and build essentials
+        run: sudo apt-get install ninja-build build-essential -y
 
       - name: Run Flutter tests
         run: flutter drive --target=test_driver/app.dart -d all
-
 
 #   deploy:
 #     runs-on: ubuntu-latest
