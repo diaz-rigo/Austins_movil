@@ -84,7 +84,8 @@ jobs:
 
       - name: Clean project
         run: flutter clean
-
+      - name: Analyze code
+        run: flutter analyze
       - name: Run Flutter tests with retry logic
         run: |
           for i in {1..3}; do
