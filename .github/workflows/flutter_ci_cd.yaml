@@ -78,10 +78,10 @@ jobs:
         with:
           flutter-version: '3.24.0'
 
-      - name: Run unit tests
-        run: flutter test
-      - name: Install Ninja and build essentials
-        run: sudo apt-get install ninja-build build-essential -y
+      - name: Install build essentials and GTK dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build build-essential cmake libgtk-3-dev
 
       - name: Run Flutter tests
         run: flutter drive --target=test_driver/app.dart -d all
