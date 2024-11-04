@@ -1,38 +1,85 @@
+import 'package:austins/models/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
-  final bool isLoggedIn; // Variable que indica si el usuario ha iniciado sesión
+Future<void> saveUserSession(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('userId', userId);
+}
 
-  const CustomHeader({Key? key, required this.isLoggedIn}) : super(key: key);
+Future<void> deleteUserSession() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('userId');
+}
+
+Future<bool> checkUserSession() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.containsKey('userId');
+}
+
+class CustomHeader extends StatefulWidget implements PreferredSizeWidget {
+  final bool isLoggedIn; // Agregar el parámetro isLoggedIn
+  const CustomHeader({Key? key, required this.isLoggedIn}) : super(key: key); // Modificar el constructor
+
+  @override
+  _CustomHeaderState createState() => _CustomHeaderState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(80.0);
+}
+
+class _CustomHeaderState extends State<CustomHeader> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSession();
+  }
+
+  Future<void> _initializeSession() async {
+    isLoggedIn = await checkUserSession();
+    setState(() {}); // Actualiza el estado para reflejar el ícono correspondiente
+  }
+
+  void _logoutUser() async {
+    await _googleSignIn.signOut();
+    await deleteUserSession();
+    setState(() {
+      isLoggedIn = false;
+    });
+  }
+
+  void _navigateToProfile(BuildContext context) {
+    // Aquí reemplaza `ProfileScreen` con el nombre de tu pantalla de perfil
+    Navigator.pushNamed(context, '/profile'); // Asegúrate de que la ruta esté definida en tu MaterialApp
+  }
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
+
     return AppBar(
-      backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
-      title: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.network(
-                  'https://static.wixstatic.com/media/64de7c_29f387abde884a1e8f9df17220933df6~mv2.png/v1/fill/w_834,h_221,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/64de7c_29f387abde884a1e8f9df17220933df6~mv2.png',
-                  height: 40.0, // Ajusta el tamaño según sea necesario
-                  fit: BoxFit.contain, // Asegura que la imagen mantenga sus proporciones
-                ),
-                const SizedBox(width: 10), // Espacio entre el logo y el texto
-              ],
-            ),
-          ],
-        ),
+      backgroundColor: const Color.fromARGB(255, 248, 210, 187),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+            'https://static.wixstatic.com/media/64de7c_29f387abde884a1e8f9df17220933df6~mv2.png/v1/fill/w_834,h_221,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/64de7c_29f387abde884a1e8f9df17220933df6~mv2.png',
+            height: 40.0,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       centerTitle: true,
       leading: IconButton(
-        icon: const Icon(Icons.menu, color: Colors.brown), // Icono de menú tipo "sándwich"
+        icon: Icon(Icons.menu, color: Colors.brown[800]),
         onPressed: () {
-          Scaffold.of(context).openDrawer(); // Abre el drawer
+          Scaffold.of(context).openDrawer();
         },
         tooltip: 'Menu',
       ),
@@ -41,93 +88,94 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
         Stack(
           children: [
             IconButton(
-              icon: const Icon(Icons.shopping_cart, color: Colors.brown), // Color marrón para icono
+              icon: Icon(Icons.shopping_cart, color: Colors.brown[800]),
               onPressed: () {
                 Navigator.pushNamed(context, '/cart');
               },
               tooltip: 'Cart',
             ),
-            Positioned(
-              right: 8,
-              top: 8,
-              child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                constraints: const BoxConstraints(
-                  minWidth: 16,
-                  minHeight: 16,
-                ),
-                child: const Text(
-                  '3', // Aquí iría el número de ítems en el carrito
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
+            if (cart.itemCount > 0)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  textAlign: TextAlign.center,
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    '${cart.itemCount}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
         // Badge para favoritos
         Stack(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.favorite, color: Colors.brown), // Color marrón para icono
-              onPressed: () {
-                Navigator.pushNamed(context, '/favorites');
-              },
-              tooltip: 'Favorites',
-            ),
-            Positioned(
-              right: 8,
-              top: 8,
-              child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                constraints: const BoxConstraints(
-                  minWidth: 16,
-                  minHeight: 16,
-                ),
-                child: const Text(
-                  '5', // Aquí iría el número de ítems en favoritos
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
+          // children: [
+          //   IconButton(
+          //     icon: Icon(Icons.favorite, color: Colors.brown[800]),
+          //     onPressed: () {
+          //       Navigator.pushNamed(context, '/favorites');
+          //     },
+          //     tooltip: 'Favorites',
+          //   ),
+          //   Positioned(
+          //     right: 8,
+          //     top: 8,
+          //     child: Container(
+          //       padding: const EdgeInsets.all(2),
+          //       decoration: BoxDecoration(
+          //         color: Colors.red,
+          //         borderRadius: BorderRadius.circular(10),
+          //       ),
+          //       constraints: const BoxConstraints(
+          //         minWidth: 16,
+          //         minHeight: 16,
+          //       ),
+          //       child: const Text(
+          //         '5',
+          //         style: TextStyle(
+          //           color: Colors.white,
+          //           fontSize: 10,
+          //         ),
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //   ),
+          // ],
         ),
         IconButton(
-          icon: const Icon(Icons.search, color: Colors.brown), // Color marrón para icono
+          icon: Icon(Icons.search, color: Colors.brown[800]),
           onPressed: () {
             // Acción para la búsqueda
           },
           tooltip: 'Search',
         ),
-        // Condicional para mostrar el icono de perfil o acceso
+        // Icono de perfil o login/logout según el estado
         IconButton(
           icon: Icon(
-            isLoggedIn ? Icons.person : Icons.login, // Muestra "perfil" si está logueado o "ingresar" si no lo está
-            color: Colors.brown,
+            isLoggedIn ? Icons.person : Icons.login,
+            color: Colors.brown[800],
           ),
-          onPressed: () {
-            if (isLoggedIn) {
-              Navigator.pushNamed(context, '/profile'); // Si está logueado, navega al perfil
+    onPressed: () {
+            if (widget.isLoggedIn) {
+              _navigateToProfile(context); // Navega a la pantalla de perfil si está logueado
             } else {
-              _showLoginModal(context); // Si no está logueado, muestra el modal de login
+              _showLoginModal(context); // Muestra el modal de login si no está logueado
             }
           },
-          tooltip: isLoggedIn ? 'Profile' : 'Login', // Texto flotante condicional
+          tooltip: widget.isLoggedIn ? 'Ir a perfil' : 'Login',
         ),
       ],
       elevation: 4.0,
@@ -136,11 +184,9 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
           bottom: Radius.circular(16.0),
         ),
       ),
-      toolbarHeight: 80.0,
     );
   }
 
-  // Método para mostrar el modal de login
   void _showLoginModal(BuildContext context) {
     showDialog(
       context: context,
@@ -170,7 +216,7 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   filled: true,
-                  fillColor: Colors.pink[50], // Color suave de fondo
+                  fillColor: Colors.pink[50],
                 ),
               ),
               const SizedBox(height: 15),
@@ -183,7 +229,32 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   filled: true,
-                  fillColor: Colors.pink[50], // Color suave de fondo
+                  fillColor: Colors.pink[50],
+                ),
+              ),
+              const SizedBox(height: 15),
+              ElevatedButton.icon(
+                icon: Icon(Icons.login),
+                label: Text("Iniciar sesión con Google"),
+                onPressed: () async {
+                  try {
+                    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+                    if (googleUser != null) {
+                      await saveUserSession(googleUser.id);
+                      setState(() {
+                        isLoggedIn = true;
+                      });
+                      Navigator.of(context).pop(); // Cierra el modal
+                    }
+                  } catch (error) {
+                    print("Error de autenticación: $error");
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ],
@@ -195,24 +266,25 @@ class CustomHeader extends StatelessWidget implements PreferredSizeWidget {
               },
               child: const Text('Cancelar'),
               style: TextButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
+                backgroundColor: const Color.fromARGB(255, 248, 210, 187),
               ),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
-                // Lógica para iniciar sesión
+                // Lógica para autenticar con email y contraseña
+                Navigator.of(context).pop();
               },
-              child: const Text('Iniciar Sesión'),
-              style: TextButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 248, 210, 187), // Color pastel suave
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 171, 119, 100),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
+              child: const Text('Iniciar sesión'),
             ),
           ],
         );
       },
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(80.0); // Tamaño preferido para el AppBar
 }
