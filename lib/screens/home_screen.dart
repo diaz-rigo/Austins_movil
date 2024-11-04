@@ -1,24 +1,47 @@
 import 'package:flutter/material.dart';
 import '../services/product_service.dart';
 import '../models/product_model.dart';
+import '../widgets/product_card.dart';
 import '../widgets/custom_header.dart';
-import '../widgets/carrusel_widget.dart'; // Asegúrate de tener esta importación
-import '../widgets/category_buttons.dart'; // Importa el widget de categorías
-import '../widgets/product_carousel.dart'; // Importa el carrusel de productos
+import '../widgets/carrusel_widget.dart';
+import '../widgets/category_buttons.dart';
+import '../widgets/product_carousel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<Product>> futureProducts;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  late Future<List<Product>> futureProducts;
+  bool isLoggedIn = false; // Variable para indicar si está logueado
+  Future<void> deleteUserSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
+  }
+  Future<void> _initializeSession() async {
+    isLoggedIn = await checkUserSession();
+    setState(() {}); // Actualiza el estado para reflejar el ícono correspondiente
+  }
   @override
   void initState() {
+    _initializeSession();
     super.initState();
     futureProducts = ProductService().fetchProducts();
+  }
+
+  void _logoutUser() async {
+    await _googleSignIn.signOut();
+    await deleteUserSession();
+    setState(() {
+      isLoggedIn = false;
+    });
   }
 
   // Lista de categorías de ejemplo
@@ -28,21 +51,22 @@ class _HomeScreenState extends State<HomeScreen> {
     'Bebidas',
     'Postres',
   ];
+
   // Lista de imágenes para el carrusel
   final List<String> imageList = [
     'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/mbpozw6je9mm8ycsoeih.jpg',
     'https://res.cloudinary.com/dfd0b4jhf/image/upload/v1709327171/public__/m2z2hvzekjw0xrmjnji4.jpg',
-    // Agrega más URLs si es necesario
   ];
+
   void _onCategorySelected(String category) {
-    // Lógica para manejar la selección de categoría (filtrar productos, etc.)
-    // print('Categoría seleccionada: $category');
+    print('Categoría seleccionada: $category');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomHeader(isLoggedIn: false),
+      appBar: CustomHeader(
+          isLoggedIn: isLoggedIn), // Utiliza la variable isLoggedIn
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -60,14 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
               onTap: () {
-                Navigator.pop(context); // Cierra el drawer
+                Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
               onTap: () {
-                Navigator.pop(context); // Cierra el drawer
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -75,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Cerrar sesión'),
               onTap: () {
                 Navigator.pop(context); // Cierra el drawer
+                _logoutUser(); // Cierra sesión
               },
             ),
           ],
@@ -82,22 +107,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // Agrega el CarruselWidget en la parte superior
           CarruselWidget(imageList: imageList),
-
-          // Espacio entre el carrusel y la lista de productos
           const SizedBox(height: 16.0),
-
-          // Botones de categorías
           CategoryButtons(
             categories: categories,
             onCategorySelected: _onCategorySelected,
           ),
-
-          // Espacio entre las categorías y el carrusel de productos
           const SizedBox(height: 16.0),
-
-          // Carrusel de productos
           Expanded(
             child: FutureBuilder<List<Product>>(
               future: futureProducts,
